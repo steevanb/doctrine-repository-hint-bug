@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+set -eu
+
+docker exec -it doctrine-repository-hint-bug-php bin/console.php $@

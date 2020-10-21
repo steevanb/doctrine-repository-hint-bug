@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Doctrine repository HINT</title>
+    </head>
+    <body>
+        The goal of this code is to show why you should NEVER use default EntityRepository given by Doctrine.
+        <br>
+        This methods of EntityRepository don't take care of default HINT :
+        <ul>
+            <li>find()</li>
+            <li>findAll()</li>
+            <li>findBy()</li>
+            <li>findOneBy()</li>
+        </ul>
+
+        <br><br>
+        In this examples, we add FORCE_PARTIAL_LOAD hint by default. This hint remove SELECT part of the linked entity,
+        here <i>c0_.user_id AS user_id_2</i>.
+        <br>
+        We will see when <i>c0_.user_id AS user_id_2</i> is in the final SQL query or not,
+        and when it should be or not.
+
+        <br><br>
+        Open <a href="http://localhost:8097/_profiler" target="_blank">Symfony profiler</a>, select last call to <i>http://localhost:8097/</i>
+        then go to <i>Debug<i></i> and <i>Doctrine</i> panels.
+        <br>
+        You will see how default HINT works:
+        <ul>
+            <li>
+                When you create your own query with <i>$this->createQueryBuilder('comment')</i>
+                default hints are taken into acocunt. You can see it in <i>Debug</i> panel.
+            </li>
+            <li>
+                When you use bugued methods of EntityRepository default hints are <strong>NOT</strong> taken into acocunt.
+                You can see it in <i>Doctrine</i> panel: all SQL queries contains <i>c0_.user_id AS user_id_2</i> but <strong>SHOULD NOT</strong>.
+            </li>
+        </ul>
+
+        <br><br>
+        This bug has been reported in 2017 but never fixed:
+        <a href="https://github.com/doctrine/orm/issues/6751" target="_blank">https://github.com/doctrine/orm/issues/6751</a>.
+    </body>
+</html>

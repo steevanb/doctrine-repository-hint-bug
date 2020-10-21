@@ -1,0 +1,20 @@
+App\Entity\User:
+    type: entity
+    repositoryClass: App\Repository\UserRepository
+
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+            options:
+                unsigned: true
+    fields:
+        name: ~
+
+    oneToMany:
+        comments:
+            targetEntity: Comment
+            mappedBy: user
+            orphanRemoval: true
+            cascade: [persist, remove]

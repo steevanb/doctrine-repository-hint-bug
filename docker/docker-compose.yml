@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+    mysql:
+        container_name: doctrine-repository-hint-bug-mysql
+        build:
+            context: mysql
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: goodnews
+        ports:
+            - 33065:3306
+
+    nginx:
+        container_name: doctrine-repository-hint-bug-nginx
+        build:
+            context: ..
+            dockerfile: docker/nginx/Dockerfile
+        ports:
+            - 8097:80
+        volumes:
+            - ../public:/var/www/html/public
+
+    php:
+        container_name: doctrine-repository-hint-bug-php
+        build:
+            context: ..
+            dockerfile: docker/php/Dockerfile
+        volumes:
+            - ..:/var/www/html
+        depends_on:
+            - mysql
+            - nginx
+
+    phpMyAdmin:
+        container_name: doctrine-repository-hint-bug-phpmyadmin
+        image: phpmyadmin/phpmyadmin:5.0
+        volumes:
+            - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+        ports:
+            - 8098:80
+        depends_on:
+            - mysql

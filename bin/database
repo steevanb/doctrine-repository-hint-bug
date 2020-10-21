@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+set -eu
+
+readonly rootDir=$(realpath $(dirname $(realpath $0))/..)
+
+${rootDir}/bin/console doctrine:database:drop --force --if-exists
+${rootDir}/bin/console doctrine:database:create
+${rootDir}/bin/console doctrine:schema:update --force

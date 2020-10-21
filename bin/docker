@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -eu
+
+readonly rootDir=$(realpath $(dirname $(realpath $0))/..)
+readonly dockerDir="${rootDir}/docker"
+readonly dockerComposeFilePath="${dockerDir}/docker-compose.yml"
+
+docker-compose \
+    --project-directory=${dockerDir} \
+    --file=${dockerComposeFilePath} \
+    build \
+    --build-arg DOCKER_UID=$(echo $UID) \
+    --force-rm \
+    --parallel
+
+docker-compose \
+    --project-directory=${dockerDir} \
+    --file=${dockerComposeFilePath} \
+    up \
+    -d

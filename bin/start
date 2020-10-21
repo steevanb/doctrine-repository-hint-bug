@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -eu
+
+readonly rootDir=$(realpath $(dirname $(realpath $0))/..)
+
+onError() {
+    if [ -f "${outputRedirect}" ]; then
+        cat "${outputRedirect}"
+        rmOutputRedirectFile
+    fi
+}
+
+rmOutputRedirectFile() {
+    if [ -f "${outputRedirect}" ]; then
+        rm "${outputRedirect}"
+    fi
+}
+
+trap onError ERR
+
+outputRedirect="${rootDir}/var/start.log"
+rmOutputRedirectFile
+
+for param in "$@"; do
+    if [ "$param" == "-v" ]; then
+        outputRedirect="/proc/self/fd/0"
+    fi
+done
+
+echo "Start Docker stack."
+${rootDir}/bin/docker > ${outputRedirect} 2>&1
+
+echo "Start dev env."
+${rootDir}/bin/env > ${outputRedirect} 2>&1
+
+echo "Create database."
+${rootDir}/bin/database > ${outputRedirect} 2>&1
+
+echo ""
+echo -e "\e[32mSite\e[0m: http://localhost:8097"
+echo -e "\e[32mphpMyAdmin\e[0m: http://localhost:8098"
