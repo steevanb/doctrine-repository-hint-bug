@@ -5,4 +5,4 @@ RUN \
     apt-get update \
     && apt-get install -y vim
 
-COPY my.cnf /etc/mysql/conf.d/goodnews.cnf
+COPY my.cnf /etc/mysql/conf.d/doctrine_hint_bug.cnf
