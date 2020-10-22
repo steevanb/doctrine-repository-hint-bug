@@ -8,7 +8,7 @@ services:
         command: --default-authentication-plugin=mysql_native_password
         environment:
             MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: goodnews
+            MYSQL_DATABASE: doctrine_hint_bug
         ports:
             - 33065:3306
 
